@@ -47,3 +47,31 @@ RUN apt-get install -y intel-level-zero-gpu level-zero level-zero-dev
 
 
 ENV TZ=Asia/Tokyo
+
+###################
+# OpenCV
+###################
+RUN apt-get -y install libgl1-mesa-glx libgl1-mesa-dri && \
+    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y build-essential cmake nano \
+    ca-certificates unzip wget \
+    pkg-config \
+    libgtk2.0-dev \
+    libjpeg-dev libpng-dev \
+    ffmpeg libavcodec-dev libavformat-dev libavresample-dev libswscale-dev \
+    libv4l-dev \
+    libtbb-dev
+RUN apt-get clean
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+ARG OPENCV_VERSION="3.4.3"
+RUN mkdir -p /tmp/opencv
+WORKDIR /tmp/opencv
+RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
+RUN unzip ${OPENCV_VERSION}.zip -d .
+RUN mkdir /tmp/opencv/opencv-${OPENCV_VERSION}/build
+WORKDIR /tmp/opencv/opencv-${OPENCV_VERSION}/build/
+RUN cmake -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF -D WITH_FFMPEG=ON -D WITH_TBB=ON .. | tee /tmp/opencv_cmake.log
+RUN make -j "$(nproc)" | tee /tmp/opencv_build.log
+RUN make install | tee /tmp/opencv_install.log
