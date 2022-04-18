@@ -38,8 +38,11 @@ void cpu_zncc(int32_t in_h,int32_t in_w,
           sum_mul_in += srcImg[idx]*srcImg[idx];
         }
       }
-      float m = sum_mul - sum_src * sum_rect;
-      float d = sqrt((sum_mul_in - sum_src*sum_src) * (sum_mul_rc - sum_rect*sum_rect));
+      int size = rec_h*rec_w;
+      // float m =size*sum_mul - sum_src * sum_rect;
+      // float d = sqrt(abs((size*sum_mul_in - sum_src*sum_src) * (size*sum_mul_rc - sum_rect*sum_rect)));
+      float m =sum_mul - sum_src * (sum_rect/size);
+      float d = sqrt(abs((sum_mul_in - sum_src*(sum_src/size)) * (sum_mul_rc - sum_rect*(sum_rect/size))));
       if(d==0){
         out_score[i*loopw+j]=0;
       }else{
