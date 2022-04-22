@@ -71,6 +71,10 @@ int main(int argc, char* argv[])
     cv::cvtColor(src, src_g, cv::COLOR_BGR2GRAY);
     int32_t img_w = src_g.size().width;
     int32_t img_h = src_g.size().height;
+    if(img_w % 8 != 0 && img_h % 8 != 0){
+        fprintf(stderr,"Error: required Image Width and Height % 8 == 0\n");
+        return -1;
+    }
     float *psrc = new float[img_w*img_h];
     float *pdst = new float[img_w*img_h];
     Mat2Float(src_g,psrc);
