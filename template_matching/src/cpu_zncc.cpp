@@ -2,13 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <iostream>
 #include <omp.h>
-void cpu_zncc(int32_t src_h,int32_t src_w,
-              int32_t temp_h,int32_t temp_w,
-              float *srcImg,float *tempImg,
-              float *out_score){
-    uint32_t temp_size = temp_h*temp_w;
-  
+#include <tuple>
+
+std::tuple<float,float> calculate_temp(int32_t temp_h, int32_t temp_w, float *tempImg){
     float sum_temp=0;
     float sum_temp_pw=0;
     for(uint32_t i=0;i<temp_h;i++){
@@ -18,8 +16,16 @@ void cpu_zncc(int32_t src_h,int32_t src_w,
             sum_temp_pw += tempImg[tempidx] * tempImg[tempidx]; 
         }
     }
-  
+    return {sum_temp,sum_temp_pw};
+      
+}
 
+void cpu_zncc(int32_t src_h,int32_t src_w,
+              int32_t temp_h,int32_t temp_w,
+              float sum_temp, float sum_temp_pw,
+              float *srcImg,float *tempImg,
+              float *out_score){
+    uint32_t temp_size = temp_h*temp_w;
     uint32_t looph=src_h-temp_h;
     uint32_t loopw=src_w-temp_w;
 #pragma omp parallel for

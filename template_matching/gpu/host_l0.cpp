@@ -84,9 +84,10 @@ int main(int argc, char* argv[])
     float *cpu_out_score = new float[(img_w-temp_w)*(img_h-temp_h)];
     Mat2Float(src_g,psrc);
     Mat2Float(temp_g,ptemp);
-
+    
+    auto [sum_temp, sum_temp_pw] = calculate_temp(temp_h, temp_w, ptemp);
     st = get_time();
-    cpu_zncc(img_h,img_w,temp_h,temp_w,psrc,ptemp,cpu_out_score);
+    cpu_zncc(img_h,img_w,temp_h,temp_w,sum_temp, sum_temp_pw,psrc,ptemp,cpu_out_score);
     ed = get_time();
     std::cout << "CPU:"<< (ed-st)*1000 << "msec" << std::endl;
     
@@ -99,16 +100,6 @@ int main(int argc, char* argv[])
     auto g_src = createImage2D(context, device, commands, fmt, img_w, img_h, psrc);
     auto g_temp = createImage2D(context, device, commands, fmt, temp_w, temp_h, ptemp);
     auto g_out_score = createImage2D(context, device, commands, fmt,img_w-temp_w, img_h-temp_h);
-    float sum_temp=0;
-    float sum_temp_pw=0;
-    for(uint32_t i=0;i<temp_h;i++){
-        for(uint32_t j=0;j<temp_w;j++){
-            uint32_t tempidx=i*temp_w+j;
-            sum_temp += ptemp[tempidx];
-            sum_temp_pw += ptemp[tempidx] * ptemp[tempidx]; 
-        }
-    }
-    
     setKernelArgs(kernel, &g_src, &g_temp, &g_out_score, &img_h, &img_w, &temp_h, &temp_w, &sum_temp, &sum_temp_pw);
 
     CHECK(zeKernelSetGroupSize(kernel, 1, 1, 1));
