@@ -270,7 +270,7 @@ inline ze_module_handle_t createModule(ze_context_handle_t hContext, ze_device_h
 #endif // CM_COMPILE_SPIRV
         krn_size,  //
         krn, //
-        "-vc-codegen",
+        "-vc-codegen -Xfinalizer '-printregusage'",
         nullptr
     };
 
