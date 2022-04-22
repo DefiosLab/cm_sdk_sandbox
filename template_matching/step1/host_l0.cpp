@@ -43,21 +43,21 @@ SPDX-License-Identifier: MIT
 int main(int argc, char* argv[])
 {
     double st,ed;
-    cv::Mat src = cv::imread("../../images/mini_cat.bmp");
+    cv::Mat src = cv::imread("../../images/mini_cat.jpg");
     cv::Mat src_g;
     cv::Mat temp_g;
     cv::cvtColor(src, src_g, cv::COLOR_BGR2GRAY);
     int32_t img_w = src_g.size().width;
     int32_t img_h = src_g.size().height;
-    cv::Mat temp = cv::imread("../../images/mini_rect.bmp");
+    cv::Mat temp = cv::imread("../../images/mini_cat_eye.jpg");
     cv::cvtColor(temp, temp_g, cv::COLOR_BGR2GRAY);
     int32_t temp_w = temp_g.size().width;
     int32_t temp_h = temp_g.size().height;
-
     float *psrc = new float[img_w*img_h];
     float *ptemp = new float[temp_w*temp_h];
     float *gpu_out_score = new float[(img_w-temp_w)*(img_h-temp_h)];
     float *cpu_out_score = new float[(img_w-temp_w)*(img_h-temp_h)];
+
     Mat2Float(src_g,psrc);
     Mat2Float(temp_g,ptemp);
     
@@ -96,21 +96,12 @@ int main(int argc, char* argv[])
     ed = get_time();
     std::cout << "GPU:"<< (ed-st)*1000 << "msec" << std::endl;
 
+
     
     destroy(g_src);
     destroy(g_temp);
     destroy(g_out_score);
     printf("\n【 Result 】\n");
-    float lmax = -INFINITY;
-    for (unsigned i=0; i<(img_h-temp_h)*(img_w-temp_h); i++){
-        if(fabs(cpu_out_score[i] -gpu_out_score[i]) > 1){
-            std::cout << "i=:" << i << std::endl;
-            std::cout << "cpu:" << cpu_out_score[i] << std::endl;
-            std::cout << "gpu:" << gpu_out_score[i] << std::endl;
-        }
-        lmax = fmaxf(fabs(cpu_out_score[i] - gpu_out_score[i]) / fabs(cpu_out_score[i]),lmax);
-    }
-    std::cout << "absolute max error:" << lmax << std::endl;
-    
+    WriteImage(gpu_out_score,src,(char*)"out.jpg",img_h,img_w,temp_h,temp_w);
     return 0;
 }

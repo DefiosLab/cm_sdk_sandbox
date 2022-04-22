@@ -1,3 +1,4 @@
+
 inline double get_time() {
     struct timeval t;
     gettimeofday(&t, NULL);
@@ -20,4 +21,16 @@ inline void Float2Mat(cv::Mat dst, float *src){
       dst.at<float>(i,j) = src[idx];
     }
   }
+}
+inline void WriteImage(float *score,cv::Mat image, char *filename, uint32_t img_h, uint32_t img_w,
+                       uint32_t temp_h,uint32_t temp_w){
+    cv::Mat result= cv::Mat::zeros(img_w-temp_w,img_h-temp_h, CV_32F);
+    cv::Mat result_c;
+    Float2Mat(result, score);
+    double mMin, mMax;
+    cv::Point minP, maxP;
+    cv::minMaxLoc(result, &mMin, &mMax, &minP, &maxP);
+    std::cout << "max: " << mMax << ", point " << maxP << std::endl;
+    cv::rectangle(image,maxP,maxP+cv::Point(temp_w,temp_h),cv::Scalar(0,0,255),5);
+    cv::imwrite(filename,image);
 }
