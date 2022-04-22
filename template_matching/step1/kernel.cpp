@@ -29,22 +29,26 @@ _GENX_MAIN_ void zncc(
     matrix<float, 1, 1> in;
     matrix<float, 1, 1> temp;
     matrix<float, 1, 1> out;
-    matrix<float, 1, 1> sum_src(0.0f);
-    matrix<float, 1, 1> sum_mul(0.0f);
-    matrix<float, 1, 1> sum_src_pw(0.0f);
-    matrix<float, 1, 1> m;
-    matrix<float, 1, 1> d;
+    // matrix<float, 1, 1> sum_src(0.0f);
+    // matrix<float, 1, 1> sum_mul(0.0f);
+    // matrix<float, 1, 1> sum_src_pw(0.0f);
+    // matrix<float, 1, 1> m;
+    // matrix<float, 1, 1> d;
+    float sum_src=0;
+    float sum_mul=0;
+    float sum_src_pw=0;
+    float m;
+    float d;
 
    
-#pragma unroll
-    for(uint32_t i=0;i<32;i++){
-#pragma unroll
-        for(uint32_t j=0;j<32;j++){
+
+    for(uint32_t i=0;i<temp_h;i++){
+        for(uint32_t j=0;j<temp_w;j++){
             read(sbuf, (idx+j)*sizeof(float), idy+i, in);
             read(tbuf, j*sizeof(float), i, temp);
-            sum_src +=in;
-            sum_mul +=in*temp;
-            sum_src_pw += in*in;            
+            sum_src +=in(0,0);
+            sum_mul +=in(0,0)*temp(0,0);
+            sum_src_pw += in(0,0)*in(0,0);            
         }
     }
 
