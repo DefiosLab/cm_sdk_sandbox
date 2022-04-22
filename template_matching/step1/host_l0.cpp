@@ -43,13 +43,13 @@ SPDX-License-Identifier: MIT
 int main(int argc, char* argv[])
 {
     double st,ed;
-    cv::Mat src = cv::imread("../images/mini_cat.bmp");
+    cv::Mat src = cv::imread("../../images/mini_cat.bmp");
     cv::Mat src_g;
     cv::Mat temp_g;
     cv::cvtColor(src, src_g, cv::COLOR_BGR2GRAY);
     int32_t img_w = src_g.size().width;
     int32_t img_h = src_g.size().height;
-    cv::Mat temp = cv::imread("../images/mini_rect.bmp");
+    cv::Mat temp = cv::imread("../../images/mini_rect.bmp");
     cv::cvtColor(temp, temp_g, cv::COLOR_BGR2GRAY);
     int32_t temp_w = temp_g.size().width;
     int32_t temp_h = temp_g.size().height;
