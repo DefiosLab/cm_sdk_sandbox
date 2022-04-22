@@ -3,46 +3,45 @@
 #include <string.h>
 #include <stdint.h>
 #include <omp.h>
-void cpu_zncc(int32_t in_h,int32_t in_w,
-              int32_t rec_h,int32_t rec_w,
-              float *srcImg,float *recImg,
+void cpu_zncc(int32_t src_h,int32_t src_w,
+              int32_t temp_h,int32_t temp_w,
+              float *srcImg,float *tempImg,
               float *out_score){
-
-  float sum_rect=0;
-  float sum_mul_rc=0;
-  for(int i=0;i<rec_h;i++){
-    for(int j=0;j<rec_w;j++){
-      int recidx=i*rec_w+j;
-      sum_rect+=recImg[recidx];
-      sum_mul_rc += recImg[recidx] * recImg[recidx]; 
+  uint32_t temp_size = temp_h*temp_w;
+  
+  float sum_temp=0;
+  float sum_temp_pw=0;
+  for(uint32_t i=0;i<temp_h;i++){
+    for(uint32_t j=0;j<temp_w;j++){
+      uint32_t tempidx=i*temp_w+j;
+      sum_temp += tempImg[tempidx];
+      sum_temp_pw += tempImg[tempidx] * tempImg[tempidx]; 
     }
   }
   
 
-  const int looph=in_h-rec_h;
-  const int loopw=in_w-rec_w;
+  uint32_t looph=src_h-temp_h;
+  uint32_t loopw=src_w-temp_w;
 #pragma omp parallel for
-  for(int i=0;i<looph;i++){
-    for(int j=0;j<loopw;j++){
+  for(uint32_t i=0;i<looph;i++){
+    for(uint32_t j=0;j<loopw;j++){
 
       float sum_src=0;
       float sum_mul=0;
-      float sum_mul_in=0;
+      float sum_src_pw=0;
 
-      for(int m=0;m<rec_h;m++){
-        for(int n=0;n<rec_w;n++){
-          int recidx = m*rec_w+n;
-          int idx = (i+m)*in_w+(j+n);
+      for(uint32_t m=0;m<temp_h;m++){
+        for(uint32_t n=0;n<temp_w;n++){
+          uint32_t tempidx = m*temp_w+n;
+          uint32_t idx = (i+m)*src_w+(j+n);
           sum_src +=srcImg[idx];
-          sum_mul +=srcImg[idx]*recImg[recidx];
-          sum_mul_in += srcImg[idx]*srcImg[idx];
+          sum_mul +=srcImg[idx]*tempImg[tempidx];
+          sum_src_pw += srcImg[idx]*srcImg[idx];
         }
       }
-      int size = rec_h*rec_w;
-      // float m =size*sum_mul - sum_src * sum_rect;
-      // float d = sqrt(abs((size*sum_mul_in - sum_src*sum_src) * (size*sum_mul_rc - sum_rect*sum_rect)));
-      float m =sum_mul - sum_src * (sum_rect/size);
-      float d = sqrt(abs((sum_mul_in - sum_src*(sum_src/size)) * (sum_mul_rc - sum_rect*(sum_rect/size))));
+      float m =temp_size*sum_mul - sum_src * sum_temp;
+      float d = sqrt(abs((temp_size*sum_src_pw - sum_src*sum_src) *
+                         (temp_size*sum_temp_pw - sum_temp*sum_temp)));
       if(d==0){
         out_score[i*loopw+j]=0;
       }else{
