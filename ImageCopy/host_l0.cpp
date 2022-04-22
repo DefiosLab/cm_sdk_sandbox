@@ -63,8 +63,8 @@ int main(int argc, char* argv[])
         std::cout << "Usage ./vector.l0.skl [Image Path]" << std::endl;
     }
     cv::Mat src = cv::imread(argv[1]);
-    if (image.empty() == true) {
-        std::count << "Error File does not exist." << std::endl;
+    if (src.empty() == true) {
+        std::cout << "Error File does not exist." << std::endl;
 		return -1;
 	}
     cv::Mat src_g;
