@@ -39,7 +39,11 @@ int main(){
   float *out_score = new float[(img_w-rect_w)*(img_h-rect_h)];
   Mat2Float(src_g,psrc);
   Mat2Float(rect_g,prect);
-
+  // for(int i=0;i<rect_h;i++){
+  //   for(int j=0;j<rect_w;j++){
+  //     prect[i*rect_w+j]=psrc[(i+16)*img_w+(j+78)];
+  //   }
+  // }
   cpu_zncc(img_h,img_w,rect_h,rect_w,psrc,prect,out_score);
 
   cv::Mat result= cv::Mat::zeros(img_h-rect_h,img_w-rect_w, CV_32F);
