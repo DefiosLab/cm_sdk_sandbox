@@ -13,6 +13,7 @@ all:
 				-isystem ${CSDK_DIR}/usr/include kernel.cpp -o kernel.spv.skl
 
 	g++ -m64 -DKERNEL=\"kernel.spv.skl\" \
+		-O3 -fopenmp \
 		-I${CSDK_DIR}/usr/local/include -L${CSDK_DIR}/usr/local/lib -I../include/ \
 		-Wl,-rpath -Wl,${CSDK_DIR}/usr/local/lib -std=c++17 -DCM_COMPILE_SPIRV\
 		host_l0.cpp ../src/cpu_zncc.cpp -lze_loader -o vector.l0.skl \
