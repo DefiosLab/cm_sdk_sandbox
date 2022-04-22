@@ -102,6 +102,16 @@ int main(int argc, char* argv[])
     destroy(g_temp);
     destroy(g_out_score);
     printf("\n【 Result 】\n");
+    float lmax = -INFINITY;
+    for (unsigned i=0; i<(img_h-temp_h)*(img_w-temp_h); i++){
+        if(fabs(cpu_out_score[i] -gpu_out_score[i]) > 1){
+            std::cout << "i=:" << i << std::endl;
+            std::cout << "cpu:" << cpu_out_score[i] << std::endl;
+            std::cout << "gpu:" << gpu_out_score[i] << std::endl;
+        }
+        lmax = fmaxf(fabs(cpu_out_score[i] - gpu_out_score[i]) / fabs(cpu_out_score[i]),lmax);
+    }
+    std::cout << "absolute max error:" << lmax << std::endl;
     WriteImage(gpu_out_score,src,(char*)"out.jpg",img_h,img_w,temp_h,temp_w);
     return 0;
 }
