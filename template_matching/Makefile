@@ -16,9 +16,9 @@ s1:
 	g++ -m64 -DKERNEL=\"step1.spv.skl\" \
 		-O3 -fopenmp \
 		-DBLOCK_X=1 -DBLOCK_Y=1 \
-		-I${CSDK_DIR}/usr/local/include -L${CSDK_DIR}/usr/local/lib -I../include/ \
+		-I${CSDK_DIR}/usr/local/include -L${CSDK_DIR}/usr/local/lib -I./include/ \
 		-Wl,-rpath -Wl,${CSDK_DIR}/usr/local/lib -std=c++17 -DCM_COMPILE_SPIRV\
-		host_l0.cpp ../src/cpu_zncc.cpp -lze_loader -o step1.l0.skl \
+		host_l0.cpp src/cpu_zncc.cpp -lze_loader -o step1.l0.skl \
 		-I$(OPENCVHEADER) $(LIB_LOADPATH) $(LINK_OPENCV_LIBS)
 s2:
 	${CSDK_DIR}/usr/bin/cmc -emit-spirv -fcmocl -mcpu=SKL -m64 \
@@ -27,9 +27,9 @@ s2:
 	g++ -m64 -DKERNEL=\"step2.spv.skl\" \
 		-O3 -fopenmp \
 		-DBLOCK_X=8 -DBLOCK_Y=8 \
-		-I${CSDK_DIR}/usr/local/include -L${CSDK_DIR}/usr/local/lib -I../include/ \
+		-I${CSDK_DIR}/usr/local/include -L${CSDK_DIR}/usr/local/lib -I./include/ \
 		-Wl,-rpath -Wl,${CSDK_DIR}/usr/local/lib -std=c++17 -DCM_COMPILE_SPIRV\
-		host_l0.cpp ../src/cpu_zncc.cpp -lze_loader -o step2.l0.skl \
+		host_l0.cpp src/cpu_zncc.cpp -lze_loader -o step2.l0.skl \
 		-I$(OPENCVHEADER) $(LIB_LOADPATH) $(LINK_OPENCV_LIBS)
 
 s3:
@@ -39,9 +39,9 @@ s3:
 	g++ -m64 -DKERNEL=\"step3.spv.skl\" \
 		-O3 -fopenmp \
 		-DBLOCK_X=8 -DBLOCK_Y=8 \
-		-I${CSDK_DIR}/usr/local/include -L${CSDK_DIR}/usr/local/lib -I../include/ \
+		-I${CSDK_DIR}/usr/local/include -L${CSDK_DIR}/usr/local/lib -I./include/ \
 		-Wl,-rpath -Wl,${CSDK_DIR}/usr/local/lib -std=c++17 -DCM_COMPILE_SPIRV\
-		host_l0.cpp ../src/cpu_zncc.cpp -lze_loader -o step3.l0.skl \
+		host_l0.cpp src/cpu_zncc.cpp -lze_loader -o step3.l0.skl \
 		-I$(OPENCVHEADER) $(LIB_LOADPATH) $(LINK_OPENCV_LIBS) 
 
 
