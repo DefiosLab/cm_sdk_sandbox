@@ -39,15 +39,14 @@ _GENX_MAIN_ void zncc(
     matrix<float, block_y, block_x> m;
     matrix<float, block_y, block_x> d;
 
-   
-   
+
+    read(sbuf, idx*block_x*sizeof(float), idy*block_y,         in.select<block_y,1,block_x,1>(0,0));
+    read(sbuf, idx*block_x*sizeof(float), idy*block_y+block_y, in.select<block_y,1,block_x,1>(block_y,0));
     for(uint32_t i=0;i<temp_h / 8;i++){
         for(uint32_t j=0;j<temp_w / 8;j++){
             int32_t offset_x = idx*block_x+j*8;
             int32_t offset_y = idy*block_y+i*8;
-            read(sbuf, (offset_x)          *sizeof(float), offset_y,         in.select<block_y,1,block_x,1>(0,0));
             read(sbuf, (offset_x + block_x)*sizeof(float), offset_y,         in.select<block_y,1,block_x,1>(0,block_x));
-            read(sbuf, (offset_x)          *sizeof(float), offset_y+block_y, in.select<block_y,1,block_x,1>(block_y,0));
             read(sbuf, (offset_x + block_x)*sizeof(float), offset_y+block_y, in.select<block_y,1,block_x,1>(block_y,block_x));
 
             read(tbuf, j*8*sizeof(float), i*8,temp);
@@ -61,6 +60,9 @@ _GENX_MAIN_ void zncc(
                     sum_src_pw += in.select<block_y,1,block_x,1>(ri,rj)*in.select<block_y,1,block_x,1>(ri,rj);            
                 }
             }
+            in.select<8,1,8,1>(0,0) = in.select<8,1,8,1>(0,8);
+            in.select<8,1,8,1>(8,0) = in.select<8,1,8,1>(8,8);
+            
         }
     }
     m = temp_size * sum_mul - sum_src * sum_temp;
