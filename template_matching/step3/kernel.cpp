@@ -30,7 +30,7 @@ _GENX_MAIN_ void zncc(
     const uint32_t temp_size = temp_h*temp_w;
     int idx = cm_group_id(0)*cm_local_size(0) + cm_local_id(0);
     int idy = cm_group_id(1)*cm_local_size(1) + cm_local_id(1);
-    matrix<float, 16, 16> in;
+    matrix<float, reg_y, reg_x> in;
     matrix<float, block_y, block_x> temp;
     matrix<float, block_y, block_x> out;
     matrix<float, block_y, block_x> sum_src(0.0f);
@@ -50,11 +50,7 @@ _GENX_MAIN_ void zncc(
             read(sbuf, (offset_x)          *sizeof(float), offset_y+block_y, in.select<block_y,1,block_x,1>(block_y,0));
             read(sbuf, (offset_x + block_x)*sizeof(float), offset_y+block_y, in.select<block_y,1,block_x,1>(block_y,block_x));
 
-            read(tbuf, j*8            *sizeof(float), i*8,         temp);
-            // read(tbuf, j*16            *sizeof(float), i*16,         temp.select<block_y,1,block_x,1>(0,0));
-            // read(tbuf, (j*16 + block_x)*sizeof(float), i*16,         temp.select<block_y,1,block_x,1>(0,block_x));
-            // read(tbuf, j*16            *sizeof(float), i*16+block_y, temp.select<block_y,1,block_x,1>(block_y,0));
-            // read(tbuf, (j*16 + block_x)*sizeof(float), i*16+block_y, temp.select<block_y,1,block_x,1>(block_y,block_x));
+            read(tbuf, j*8*sizeof(float), i*8,temp);
             
 #pragma unroll
             for(uint32_t ri = 0; ri < block_y; ri++){
