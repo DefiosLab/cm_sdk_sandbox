@@ -29,11 +29,6 @@ _GENX_MAIN_ void zncc(
     matrix<float, 1, 1> in;
     matrix<float, 1, 1> temp;
     matrix<float, 1, 1> out;
-    // matrix<float, 1, 1> sum_src(0.0f);
-    // matrix<float, 1, 1> sum_mul(0.0f);
-    // matrix<float, 1, 1> sum_src_pw(0.0f);
-    // matrix<float, 1, 1> m;
-    // matrix<float, 1, 1> d;
     float sum_src=0;
     float sum_mul=0;
     float sum_src_pw=0;
