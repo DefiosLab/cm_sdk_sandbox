@@ -104,18 +104,8 @@ int main(int argc, char* argv[])
     printf("\n【 Result 】\n");
     float lmax = -INFINITY;
 
-    // for(int i=0;i<32;i++){
-    //     std::cout << "cpu:" << cpu_out_score[i] << "gpu:" << gpu_out_score[i] << std::endl;
-    // }
-    for (unsigned i=0; i<(img_h-temp_h)*(img_w-temp_h); i++){
-        if(fabs(cpu_out_score[i] -gpu_out_score[i]) / fabs(cpu_out_score[i]) > 1){
-            std::cout << "i=:" << i << std::endl;
-            std::cout << "cpu:" << cpu_out_score[i] << std::endl;
-            std::cout << "gpu:" << gpu_out_score[i] << std::endl;
-        }
-        lmax = fmaxf(fabs(cpu_out_score[i] - gpu_out_score[i]) / fabs(cpu_out_score[i]),lmax);
-    }
-    std::cout << "absolute max error:" << lmax << std::endl;
+    ErrorCheck(cpu_out_score,gpu_out_score,(img_h-temp_h)*(img_w-temp_w));
+    
     WriteImage(gpu_out_score,src,(char*)"out.jpg",img_h,img_w,temp_h,temp_w);
     return 0;
 }
