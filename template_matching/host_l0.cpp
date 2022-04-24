@@ -43,16 +43,27 @@ SPDX-License-Identifier: MIT
 
 int main(int argc, char* argv[])
 {
+    if(argc != 3){
+        std::cout << "Usage ./stepN.l0.skl [Src Image Path] [Template Image Path]" << std::endl;
+        return -1;
+    }
     double st,ed;
-    cv::Mat src = cv::imread("../../images/mini_cat.jpg");
-    // cv::Mat src = cv::imread("../../images/cat.jpg");
+    cv::Mat src = cv::imread(argv[1]);
+    if (src.empty() == true) {
+        std::cout << "Error File does not exist." << std::endl;
+		return -1;
+    }
     cv::Mat src_g;
     cv::Mat temp_g;
     cv::cvtColor(src, src_g, cv::COLOR_BGR2GRAY);
     int32_t img_w = src_g.size().width;
     int32_t img_h = src_g.size().height;
-    cv::Mat temp = cv::imread("../../images/mini_cat_eye.jpg");
-    // cv::Mat temp = cv::imread("../../images/cat_eye.jpg");
+    cv::Mat temp = cv::imread(argv[2]);
+    if (temp.empty() == true) {
+        std::cout << "Error File does not exist." << std::endl;
+		return -1;
+    }
+    
     cv::cvtColor(temp, temp_g, cv::COLOR_BGR2GRAY);
     int32_t temp_w = temp_g.size().width;
     int32_t temp_h = temp_g.size().height;
