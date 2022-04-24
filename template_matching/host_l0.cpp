@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
     auto [driver, device, context] = findDriverAndDevice();
     auto commands = createImmCommandList(context, device);
     ze_event_handle_t event = createEvent(context, device);
-    auto kernel = createKernel(context, device,"kernel.spv.skl", "zncc");
+    auto kernel = createKernel(context, device,KERNEL, "zncc");
     
     ze_image_format_t fmt = {ZE_IMAGE_FORMAT_LAYOUT_32, ZE_IMAGE_FORMAT_TYPE_FLOAT};
 
@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
         auto g_out_score = createImage2D(context, device, commands, fmt,img_w-temp_w, img_h-temp_h);
         setKernelArgs(kernel, &g_src, &g_temp, &g_out_score, &img_h, &img_w, &temp_h, &temp_w, &sum_temp, &sum_temp_pw);
         CHECK(zeKernelSetGroupSize(kernel, 1, 1, 1));
-        ze_group_count_t groupCount = {score_w, score_h, 1};
+        ze_group_count_t groupCount = {score_w / (uint32_t)BLOCK_X, score_h / (uint32_t)BLOCK_Y, 1};
         
 
         appendLaunchKernel(commands, kernel, &groupCount, event);
