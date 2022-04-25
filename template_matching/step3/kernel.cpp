@@ -40,9 +40,10 @@ _GENX_MAIN_ void zncc(
     matrix<float, block_y, block_x> d;
 
 
-    read(sbuf, idx*block_x*sizeof(float), idy*block_y,         in.select<block_y,1,block_x,1>(0,0));
-    read(sbuf, idx*block_x*sizeof(float), idy*block_y+block_y, in.select<block_y,1,block_x,1>(block_y,0));
+
     for(uint32_t i=0;i<temp_h / 8;i++){
+        read(sbuf, idx*block_x*sizeof(float), (i+idy)*block_y,         in.select<block_y,1,block_x,1>(0,0));
+        read(sbuf, idx*block_x*sizeof(float), (i+idy)*block_y+block_y, in.select<block_y,1,block_x,1>(block_y,0));
         for(uint32_t j=0;j<temp_w / 8;j++){
             int32_t offset_x = idx*block_x+j*8;
             int32_t offset_y = idy*block_y+i*8;
