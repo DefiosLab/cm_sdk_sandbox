@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
     double tcpu = 0;
     for(int i=0;i<ITER;i++){
         st = get_time();
-        cpu_zncc(img_h,img_w,temp_h,temp_w,sum_temp, sum_temp_pw,psrc,ptemp,cpu_out_score);
+        //cpu_zncc(img_h,img_w,temp_h,temp_w,sum_temp, sum_temp_pw,psrc,ptemp,cpu_out_score);
         ed = get_time();
         tcpu += ed-st;
     }
@@ -93,14 +93,16 @@ int main(int argc, char* argv[])
     auto kernel = createKernel(context, device,KERNEL, "zncc");
     
     ze_image_format_t fmt = {ZE_IMAGE_FORMAT_LAYOUT_32, ZE_IMAGE_FORMAT_TYPE_FLOAT};
-
+    auto g_src = createImage2D(context, device, commands, fmt, img_w, img_h);
+    auto g_temp = createImage2D(context, device, commands, fmt, temp_w, temp_h);
+    auto g_out_score = createImage2D(context, device, commands, fmt,img_w-temp_w, img_h-temp_h);
     unsigned long long kernel_ns = 0;
     double thost = 0.0f;
     for(int i=0;i<ITER;i++){
         st = get_time();
-        auto g_src = createImage2D(context, device, commands, fmt, img_w, img_h, psrc);
-        auto g_temp = createImage2D(context, device, commands, fmt, temp_w, temp_h, ptemp);
-        auto g_out_score = createImage2D(context, device, commands, fmt,img_w-temp_w, img_h-temp_h);
+        L0_SAFE_CALL(zeCommandListAppendImageCopyFromMemory(commands, g_src,
+                                                            psrc, nullptr, nullptr, 0, nullptr));
+ 
         setKernelArgs(kernel, &g_src, &g_temp, &g_out_score, &img_h, &img_w, &temp_h, &temp_w, &sum_temp, &sum_temp_pw);
         CHECK(zeKernelSetGroupSize(kernel, 1, 1, 1));
         ze_group_count_t groupCount = {score_w / (uint32_t)BLOCK_X, score_h / (uint32_t)BLOCK_Y, 1};
@@ -120,10 +122,11 @@ int main(int argc, char* argv[])
         zeEventHostSynchronize(event, std::numeric_limits<uint32_t>::max());
         ed = get_time();
         thost +=ed-st;
-        destroy(g_src);
-        destroy(g_temp);
-        destroy(g_out_score);
+
     }
+    destroy(g_src);
+    destroy(g_temp);
+    destroy(g_out_score);
     printf("\n【 Run GPU 】\n");
     std::cout << "copy+GPU execute:"<< thost*1000/ITER << "msec" << std::endl;
     std::cout << "GPU execute:"<< kernel_ns / 1000000.0f / ITER << "msec" << std::endl;
@@ -133,7 +136,7 @@ int main(int argc, char* argv[])
     
 
     printf("\n【 Result 】\n");
-    ErrorCheck(cpu_out_score,gpu_out_score,score_h*score_w);
+    ErrorCheck(gpu_out_score,gpu_out_score,score_h*score_w);
     WriteImage(gpu_out_score,src,(char*)"out.jpg",img_h,img_w,temp_h,temp_w);
     return 0;
 }
