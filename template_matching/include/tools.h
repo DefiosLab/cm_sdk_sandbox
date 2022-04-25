@@ -24,15 +24,13 @@ inline void Float2Mat(cv::Mat dst, float *src){
 }
 inline void ErrorCheck(float *CPU,float *GPU,uint32_t size){
     float lmax = -INFINITY;
+    float amax = -INFINITY;
     for (unsigned i=0; i<size; i++){
-        if(fabs(CPU[i] -GPU[i]) / fabs(CPU[i]) > 1){
-            std::cout << "i=:" << i << std::endl;
-            std::cout << "cpu:" << CPU[i] << std::endl;
-            std::cout << "gpu:" << GPU[i] << std::endl;
-        }
-        lmax = fmaxf(fabs(CPU[i] - GPU[i]) / fabs(CPU[i]),lmax);
+        lmax = fmaxf(fabs(CPU[i] - GPU[i]) / fmaxf(fabs(CPU[i]),fabs(GPU[i])),lmax);
+        amax = fmaxf(fabs(CPU[i] - GPU[i]),amax);
     }
-    std::cout << "absolute max error:" << lmax << std::endl;
+    std::cout << "relative max error:" << lmax << std::endl;
+    std::cout << "absolute max error:" << amax << std::endl;
 }
 inline void WriteImage(float *score,cv::Mat image, char *filename, uint32_t img_h, uint32_t img_w,
                        uint32_t temp_h,uint32_t temp_w){
