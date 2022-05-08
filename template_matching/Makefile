@@ -4,7 +4,9 @@ LINK_OPENCV_LIBS = \
 -lopencv_core \
 -lopencv_imgcodecs \
 -lopencv_highgui \
--lopencv_imgproc
+-lopencv_imgproc \
+-lopencv_video \
+-lopencv_videoio
 
 LDFLAGS = -lm -lstdc++ $(LIB_LOADPATH) $(LINK_OPENCV_LIBS)
 all : s1 s2 s3
@@ -37,13 +39,24 @@ s3:
 				-isystem ${CSDK_DIR}/usr/include step3/kernel.cpp -o step3.spv.skl
 
 	g++ -m64 -DKERNEL=\"step3.spv.skl\" \
-		-O3 -fopenmp \
+		-O2 -fopenmp \
 		-DBLOCK_X=8 -DBLOCK_Y=8 \
 		-I${CSDK_DIR}/usr/local/include -L${CSDK_DIR}/usr/local/lib -I./include/ \
 		-Wl,-rpath -Wl,${CSDK_DIR}/usr/local/lib -std=c++17 -DCM_COMPILE_SPIRV\
 		host_l0.cpp src/cpu_zncc.cpp -lze_loader -o step3.l0.skl \
 		-I$(OPENCVHEADER) $(LIB_LOADPATH) $(LINK_OPENCV_LIBS) 
+camera:
+	g++ get_temp.cpp -o get_temp \
+		-I$(OPENCVHEADER) $(LIB_LOADPATH) $(LINK_OPENCV_LIBS)
+	${CSDK_DIR}/usr/bin/cmc -emit-spirv -fcmocl -mcpu=SKL -m64 \
+				-isystem ${CSDK_DIR}/usr/include step3/kernel.cpp -o step3.spv.skl
 
-
+	g++ -m64 -DKERNEL=\"step3.spv.skl\" \
+		-O3 -fopenmp \
+		-DBLOCK_X=8 -DBLOCK_Y=8 \
+		-I${CSDK_DIR}/usr/local/include -L${CSDK_DIR}/usr/local/lib -I./include/ \
+		-Wl,-rpath -Wl,${CSDK_DIR}/usr/local/lib -std=c++17 -DCM_COMPILE_SPIRV\
+		cam_run.cpp src/cpu_zncc.cpp -lze_loader -o cam_run.l0.skl \
+		-I$(OPENCVHEADER) $(LIB_LOADPATH) $(LINK_OPENCV_LIBS) 
 clean:
-	rm -rf *.skl tmp*  out.jpg
+	rm -rf *.skl tmp*  out.jpg rect.png
