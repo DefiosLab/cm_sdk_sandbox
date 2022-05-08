@@ -34,8 +34,7 @@ inline void ErrorCheck(float *CPU,float *GPU,uint32_t size){
 }
 inline void WriteImage(float *score,cv::Mat image, char *filename, uint32_t img_h, uint32_t img_w,
                        uint32_t temp_h,uint32_t temp_w){
-    cv::Mat result= cv::Mat::zeros(img_w-temp_w,img_h-temp_h, CV_32F);
-    cv::Mat result_c;
+    cv::Mat result= cv::Mat::zeros(img_h-temp_h,img_w-temp_w, CV_32F);
     Float2Mat(result, score);
     double mMin, mMax;
     cv::Point minP, maxP;
