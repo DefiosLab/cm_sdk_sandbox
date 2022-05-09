@@ -39,7 +39,7 @@ s3:
 				-isystem ${CSDK_DIR}/usr/include step3/kernel.cpp -o step3.spv.skl
 
 	g++ -m64 -DKERNEL=\"step3.spv.skl\" \
-		-O2 -fopenmp \
+		-O3 -fopenmp \
 		-DBLOCK_X=8 -DBLOCK_Y=8 \
 		-I${CSDK_DIR}/usr/local/include -L${CSDK_DIR}/usr/local/lib -I./include/ \
 		-Wl,-rpath -Wl,${CSDK_DIR}/usr/local/lib -std=c++17 -DCM_COMPILE_SPIRV\
