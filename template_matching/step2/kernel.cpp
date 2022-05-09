@@ -48,8 +48,8 @@ _GENX_MAIN_ void zncc(
         }
     }
     m = temp_size * sum_mul - sum_src * sum_temp;
-    d = cm_sqrt(cm_abs<float>((temp_size*sum_src_pw - sum_src*sum_src) *
-                       (temp_size*sum_temp_pw - sum_temp*sum_temp)));
+    d = cm_sqrt((temp_size*sum_src_pw - sum_src*sum_src) *
+                (temp_size*sum_temp_pw - sum_temp*sum_temp));
 
     out = m/d;
     write(obuf, idx * block_x * sizeof(float), idy * block_y, out);
