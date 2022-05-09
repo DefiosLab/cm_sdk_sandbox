@@ -88,7 +88,6 @@ int main(int argc, char* argv[])
     auto g_src = createImage2D(context, device, commands, fmt, img_w, img_h);
     auto g_temp = createImage2D(context, device, commands, fmt, temp_w, temp_h, ptemp);
     auto g_out_score = createImage2D(context, device, commands, fmt,img_w-temp_w, img_h-temp_h);
-    unsigned long long kernel_ns = 0;
     double thost = 0.0f;
     L0_SAFE_CALL(zeCommandListAppendImageCopyFromMemory(commands, g_src,
                                                         psrc, nullptr, nullptr, 0, nullptr));
