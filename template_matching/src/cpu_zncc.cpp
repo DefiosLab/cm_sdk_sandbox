@@ -46,8 +46,8 @@ void cpu_zncc(int32_t src_h,int32_t src_w,
                 }
             }
             float m =temp_size*sum_mul - sum_src * sum_temp;
-            float d = sqrt(abs((temp_size*sum_src_pw - sum_src*sum_src) *
-                               (temp_size*sum_temp_pw - sum_temp*sum_temp)));
+            float d = sqrt((temp_size*sum_src_pw - sum_src*sum_src) *
+                           (temp_size*sum_temp_pw - sum_temp*sum_temp));
             if(d==0){
                 out_score[i*loopw+j]=0;
             }else{
