@@ -24,7 +24,7 @@ SPDX-License-Identifier: MIT
 #include <level_zero/ze_api.h>
 #include "cpu_zncc.h"
 #include "tools.h"
-#define ITER 100
+#define ITER 1
 
 // コンパイルオプションでカーネルファイルを指定して
 #ifndef KERNEL
@@ -98,38 +98,26 @@ int main(int argc, char* argv[])
     auto g_out_score = createImage2D(context, device, commands, fmt,img_w-temp_w, img_h-temp_h);
     unsigned long long kernel_ns = 0;
     double thost = 0.0f;
+    L0_SAFE_CALL(zeCommandListAppendImageCopyFromMemory(commands, g_src,
+                                                        psrc, nullptr, nullptr, 0, nullptr));
     for(int i=0;i<ITER;i++){
-        st = get_time();
-        L0_SAFE_CALL(zeCommandListAppendImageCopyFromMemory(commands, g_src,
-                                                            psrc, nullptr, nullptr, 0, nullptr));
- 
         setKernelArgs(kernel, &g_src, &g_temp, &g_out_score, &img_h, &img_w, &temp_h, &temp_w, &sum_temp, &sum_temp_pw);
         CHECK(zeKernelSetGroupSize(kernel, 1, 1, 1));
         ze_group_count_t groupCount = {score_w / (uint32_t)BLOCK_X, score_h / (uint32_t)BLOCK_Y, 1};
         
-
+        st = get_time();
         appendLaunchKernel(commands, kernel, &groupCount, event);
-        zeEventHostSynchronize(event, std::numeric_limits<uint32_t>::max());
-
-
-        
-        ze_kernel_timestamp_result_t timestamp;
-        zeEventQueryKernelTimestamp(event, &timestamp);        
-        kernel_ns += (timestamp.context.kernelEnd - timestamp.context.kernelStart);
-
-        reset(event);
-        copyToMemory(commands, gpu_out_score, g_out_score, event);
         zeEventHostSynchronize(event, std::numeric_limits<uint32_t>::max());
         ed = get_time();
         thost +=ed-st;
-
     }
+    copyToMemory(commands, gpu_out_score, g_out_score, event);
+    zeEventHostSynchronize(event, std::numeric_limits<uint32_t>::max());    
     destroy(g_src);
     destroy(g_temp);
     destroy(g_out_score);
     printf("\n【 Run GPU 】\n");
-    std::cout << "copy+GPU execute:"<< thost*1000/ITER << "msec" << std::endl;
-    std::cout << "GPU execute:"<< kernel_ns / 1000000.0f / ITER << "msec" << std::endl;
+    std::cout << "GPU:"<< thost*1000/ITER << "msec" << std::endl;
 
 
 
