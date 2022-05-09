@@ -9,7 +9,7 @@ LINK_OPENCV_LIBS = \
 -lopencv_videoio
 
 LDFLAGS = -lm -lstdc++ $(LIB_LOADPATH) $(LINK_OPENCV_LIBS)
-all : s1 s2 s3
+all : s1 s2 s3 camera
 
 s1:
 	${CSDK_DIR}/usr/bin/cmc -emit-spirv -fcmocl -mcpu=SKL -m64 \
