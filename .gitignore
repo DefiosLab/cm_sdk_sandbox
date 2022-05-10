@@ -174,3 +174,7 @@ $RECYCLE.BIN/
 tmp*
 *.shim
 *.l0*
+*.spv*
+*.asm
+
+image_coler_inv/*.jpg
