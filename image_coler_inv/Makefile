@@ -15,7 +15,7 @@ all:
 	g++ -m64 -DKERNEL=\"kernel.spv.skl\" \
 		-I${CSDK_DIR}/usr/local/include -L${CSDK_DIR}/usr/local/lib  \
 		-Wl,-rpath -Wl,${CSDK_DIR}/usr/local/lib -std=c++17 -DCM_COMPILE_SPIRV\
-		host_l0.cpp -lze_loader -o vector.l0.skl \
+		host_l0.cpp -lze_loader -o image_coler_inv.l0.skl \
 		-I$(OPENCVHEADER) $(LIB_LOADPATH) $(LINK_OPENCV_LIBS) 
 
 
