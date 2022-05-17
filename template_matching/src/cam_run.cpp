@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
     cv::Mat result= cv::Mat::zeros(img_h-temp_h,img_w-temp_w, CV_32F);
 
     cv::VideoCapture cap(0);
-    cap.set(cv::CAP_PROP_FOURCC ,CV_FOURCC('M', 'J', 'P', 'G') );
+    cap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G') );
     cap.set(cv::CAP_PROP_FRAME_WIDTH, img_w);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, img_h);
     setKernelArgs(kernel, &g_src, &g_temp, &g_out_score, &img_h, &img_w, &temp_h, &temp_w, &sum_temp, &sum_temp_pw);
