@@ -65,7 +65,7 @@ RUN apt-get update && \
 RUN apt-get clean
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
-ARG OPENCV_VERSION="3.4.3"
+ARG OPENCV_VERSION="4.5.5"
 RUN mkdir -p /tmp/opencv
 WORKDIR /tmp/opencv
 RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip

@@ -15,7 +15,7 @@
 int main(int argc, char* argv[])
 {
     cv::VideoCapture cap(0);
-    cap.set(cv::CAP_PROP_FOURCC ,CV_FOURCC('M', 'J', 'P', 'G') );
+    cap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G') );
     cap.set(cv::CAP_PROP_FRAME_WIDTH, 1920);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, 1080);
     cv::Mat dst;
