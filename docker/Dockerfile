@@ -24,7 +24,7 @@ WORKDIR /home/worker
 ###################
 # CM_SDK
 ###################
-RUN wget https://01.org/sites/default/files/downloads//cmsdk20211028.zip
+RUN wget https://downloadmirror.intel.com/714235/cmsdk20211028.zip
 RUN unzip cmsdk*.zip
 RUN mv cm_sdk*/ cm_sdk/
 
